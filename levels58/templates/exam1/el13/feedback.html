@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Breaker Feedback</title>
+		<link rel="icon" type="image/png" href="/static/favicon.png" />
+	</head>
+	<body>
+		<h1>Breaker Feedback</h1>
+		
+		{% for name, message in messages %}
+			<table border="1">
+				<tr>
+					<td><b>Name</b></td>
+					<td>{{ name }}</td>
+				</tr>
+				<tr>
+					<td colspan="2">{{ message.replace('\n', '<br>') | safe }}</td>
+				</tr>
+			</table>
+			<br>
+		{% endfor %}
+	</body>
+</html>

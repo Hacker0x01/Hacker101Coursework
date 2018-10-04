@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Document Exchange</title>
+		<link rel="icon" type="image/png" href="/static/favicon.png" />
+		<!--
+		In this level, there are 5 vulnerabilities, falling into the following classes:
+		XSS
+		Directory Traversal
+		SQL Injection
+		Code Execution
+
+		In theory, you shouldn't be able to overwrite templates/code for the coursework, but that's not 100% so try not to do it, please!
+		
+		Have fun!
+		-->
+	</head>
+	<body>
+		<h1>Document Exchange</h1>
+		<form action="{{ handler.level8.post_index }}" method="POST" enctype="multipart/form-data">$CSRF$
+			<h2>Upload</h2>
+			Name: <input type="text" name="name"><br>
+			<input type="file" name="doc"><br>
+			<input type="submit" value="Upload">
+		</form>
+		<table border="1">
+			<tr>
+				<th>Name</th><th>MIME Type</th>
+			</tr>
+			{% for (id, name, mimetype) in docs %}
+				<tr>
+					<td>{{ name }}</td>
+					<td>{{ mimetype | safe }}</td>
+					<td><a href="{{ handler.level8.get_view.url(id) }}">View</a></td>
+					<td><a href="{{ handler.level8.get_view.url(id, download=True) }}">Download</a></td>
+				</tr>
+			{% endfor %}
+		</table>
+	</body>
+</html>

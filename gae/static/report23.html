@@ -1,0 +1,194 @@
+<h1>Level2</h1>
+
+<h2>Reflected XSS</h2>
+
+<p><strong>Severity</strong>: Medium</p>
+
+<p><strong>Description</strong>: The application receives an <code>id</code> field in the query string.  In the case of viewing a non-existent profile, this field is not properly encoded before display to the user.  In the case of editing profiles, it is ignored but reflected in a non-safe form to the browser as part of the form action.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>Go to http://breaker-studentcenter.appspot.com/levels/2/?id=%3Cscript%3Ealert(1);%3C/script%3E</li>
+<li>Note that an alert dialog is shown</li>
+</ol>
+
+<p><strong>Impact</strong>: This vulnerability allows an attacker to perform any tasks she desires, as an arbitrary user whom she convinces to click a link containing an XSS payload.</p>
+
+<p><strong>Mitigation</strong>: All user input must be escaped before displaying to the page, in order to properly mitigate XSS issues.
+In this case, it is also a good idea to convert the <code>id</code> parameter to an integer first, as this would completely eliminate the possibility of user input compromising the page.</p>
+
+<p><strong>Affected Assets</strong>:</p>
+
+<ol>
+<li>http://breaker-studentcenter.appspot.com/levels/2</li>
+<li>http://breaker-studentcenter.appspot.com/levels/2/edit</li>
+</ol>
+
+<h2>Stored XSS</h2>
+
+<p><strong>Severity</strong>: Medium</p>
+
+<p><strong>Description</strong>: The URL for profile photos is not escaped for display, making it vulnerable to stored XSS on both the profile view and edit pages.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>Go to the application's edit profile page</li>
+<li>In the <code>Profile picture URL</code> field, insert the following: <code>http://breaker-studentcenter.appspot.com/favicon.png?"&gt;&lt;script&gt;alert(1);&lt;/script&gt;.png</code></li>
+<li>Note that the alert dialog is shown upon save</li>
+</ol>
+
+<p><strong>Impact</strong>: This vulnerability allows an attacker to perform any tasks she desires, as an arbitrary user whom she convinces to click a link containing an XSS payload.</p>
+
+<p><strong>Mitigation</strong>: All user input must be escaped before displaying to the page, in order to properly mitigate XSS issues.</p>
+
+<p><strong>Affected Assets</strong>: http://breaker-studentcenter.appspot.com/levels/2/edit</p>
+
+<h2>Stored XSS</h2>
+
+<p><strong>Severity</strong>: Medium</p>
+
+<p><strong>Description</strong>: Colors embedded in the description field of profiles are not escaped when being converted for display.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>Go to the application's edit profile page</li>
+<li>In the <code>Description</code> field, insert the following: <code>[ red"&gt;&lt;script&gt;alert(1);&lt;/script&gt; | Exploit ]</code></li>
+<li>Note that the alert dialog is shown upon save</li>
+</ol>
+
+<p><strong>Impact</strong>: This vulnerability allows an attacker to perform any tasks she desires, as an arbitrary user whom she convinces to click a link containing an XSS payload.</p>
+
+<p><strong>Mitigation</strong>: All user input must be escaped before displaying to the page, in order to properly mitigate XSS issues.</p>
+
+<p><strong>Affected Assets</strong>: http://breaker-studentcenter.appspot.com/levels/2/edit</p>
+
+<h2>Notes</h2>
+
+<p>The vulnerability count in this level is incorrect, with an actual total of 5, not 7 -- it was based on the number of <em>outputs</em> rather than <em>inputs</em>.</p>
+
+<p>The unrelated bonus was due to the handling of special characters in the description.  If you're curious, check out https://gist.github.com/daeken/6703071 to see how <code>\x00-\x02</code> are handled.</p>
+
+<h1>Level3</h1>
+
+<h2>Cross-Site Request Forgery</h2>
+
+<p><strong>Severity</strong>: High</p>
+
+<p><strong>Description</strong>: The "Edit Page" functionality is vulnerable to CSRF due to no session-specific random token being attached to the form.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>Go to the admin page</li>
+<li>Submit a page edit</li>
+<li>Note that the only data transmitted is the title and the body.</li>
+</ol>
+
+<p><strong>Impact</strong>: Due to the simple nature of this vulnerability, it's possible for an attacker to perform edits on any page belonging to a victim whom he can convince to access a page controlled by the attacker.</p>
+
+<p><strong>Mitigation</strong>: Proper CSRF tokens should be used on all forms.  You can read more here: https://www.owasp.org/index.php/Cross-Site<em>Request</em>Forgery_(CSRF)</p>
+
+<p><strong>Affected Assets</strong>: http://breaker-studentcenter.appspot.com/levels/3/admin</p>
+
+<h2>Lack of Authorization on Admin Functionality</h2>
+
+<p><strong>Severity</strong>: Critical</p>
+
+<p><strong>Description</strong>: The "Edit Page" functionality only checks admin authorization when accessing the form, but does not check on edits.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>As a non-admin, perform a POST to http://breaker-studentcenter.appspot.com/levels/3/admin containing the body <code>title=Vuln&amp;body=No+Admin+Needed</code></li>
+<li>Note that the page is edited to reflect these changes</li>
+</ol>
+
+<p><strong>Impact</strong>: Due to the lack of authorization, it's possible for any user to perform arbitrary changes to content.  In conjunction with the XSS vulnerabilities, this could allow an attacker to compromise the sessions of every user.</p>
+
+<p><strong>Mitigation</strong>: Proper authorization must be in place on all actions an administrator could perform.</p>
+
+<p><strong>Affected Assets</strong>: http://breaker-studentcenter.appspot.com/levels/3/admin</p>
+
+<h2>Authorization by Client-Side Credential</h2>
+
+<p><strong>Severity</strong>: Critical</p>
+
+<p><strong>Description</strong>: Authorization for the application is done via a cookie named <code>admin</code>.  Changing this from <code>0</code> to <code>1</code> unlocks all admin functionality.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>As a non-admin, visit the application while intercepting responses with Burp Proxy</li>
+<li>When the server sends the <code>admin</code> cookie, simply change the value to <code>1</code></li>
+<li>Note that the page contains admin functionality, which is fully usable</li>
+</ol>
+
+<p><strong>Impact</strong>: This enables any user to trivially enable administration functionality.</p>
+
+<p><strong>Mitigation</strong>: User authorization should be stored purely on the server, tied to an authenticated session.</p>
+
+<p><strong>Affected Assets</strong>: http://breaker-studentcenter.appspot.com/levels/3/</p>
+
+<h2>Stored XSS</h2>
+
+<p><strong>Severity</strong>: Medium</p>
+
+<p><strong>Description</strong>: Due to improper sanitization of page bodies, it's possible to embed stored XSS payloads in pages.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>As an admin, visit the administration page</li>
+<li>Put the following in the body: <code>&lt;a ONmouseover="alert(1)"&gt;Hover over me&lt;/a&gt;</code></li>
+<li>Save the page</li>
+<li>Hover over the inserted text and note that an alert dialog is shown</li>
+</ol>
+
+<p><strong>Impact</strong>: Stored XSS here makes it possible for an attacker to compromise user sessions.</p>
+
+<p><strong>Mitigation</strong>: All user input must be properly HTML escaped before output.  The use of a third-party, vetted library for HTML sanitization is recommended for tags that should be allowed.</p>
+
+<p><strong>Affected Assets</strong>: http://breaker-studentcenter.appspot.com/levels/3/admin</p>
+
+<h2>Stored XSS</h2>
+
+<p><strong>Severity</strong>: Medium</p>
+
+<p><strong>Description</strong>: Due to improper sanitization of page titles, it's possible to embed stored XSS payloads in pages.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>As an admin, visit the administration page</li>
+<li>Put the following in the title field: <code>&lt;/title&gt;&lt;script&gt;alert(1)&lt;/script&gt;</code></li>
+<li>Save the page</li>
+<li>Note that an alert dialog is shown</li>
+</ol>
+
+<p><strong>Impact</strong>: Stored XSS here makes it possible for an attacker to compromise user sessions.</p>
+
+<p><strong>Mitigation</strong>: All user input must be properly HTML escaped before output.</p>
+
+<p><strong>Affected Assets</strong>: http://breaker-studentcenter.appspot.com/levels/3/admin</p>
+
+<h2>DOM XSS</h2>
+
+<p><strong>Severity</strong>: Medium</p>
+
+<p><strong>Description</strong>: Due to improper sanitization of page titles in the window hash, it's possible to inject arbitrary HTML into the page.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>As an admin, visit the page <code>http://breaker-studentcenter.appspot.com/levels/3/#home"&gt;&lt;script&gt;alert(1);&lt;/script&gt;</code></li>
+<li>Note that an alert dialog is shown</li>
+</ol>
+
+<p><strong>Impact</strong>: This makes it possible for an attacker to compromise the session of an admin user whom she can convince to visit the exploited page.</p>
+
+<p><strong>Mitigation</strong>: All user input must be properly HTML escaped before output on the client side.</p>
+
+<p><strong>Affected Assets</strong>: http://breaker-studentcenter.appspot.com/levels/3/</p>

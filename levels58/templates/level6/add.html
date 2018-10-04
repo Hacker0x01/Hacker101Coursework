@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Student Center</title>
+		<link rel="icon" type="image/png" href="/static/favicon.png" />
+	</head>
+	<body>
+		<h1>Add Student</h1>
+		<br>
+		<form action="{{ handler.level6.post_add }}" method="POST">$CSRF$
+			First name: <input type="text" name="firstname"><br>
+			Last name: <input type="text" name="lastname"><br>
+			<br>
+			<input type="submit" value="Add">
+		</form>
+	</body>
+</html>

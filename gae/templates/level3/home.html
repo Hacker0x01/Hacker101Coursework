@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+	<head>
+		<title>${ page.title }</title>
+		<link rel="icon" type="image/png" href="/favicon.png" />
+		<!--
+		In this level, there are 6 vulnerabilities, falling into the following classes:
+		Various XSS
+		Improper Authorization
+		Unrelated Bonuses
+
+		Have fun!
+		-->
+	</head>
+	<body>
+		<h1>${ page.title | h }</h1>
+		<p>${ page.html_body }</p>
+		<script>
+			// We should only display the edit link to authenticated admins.
+			// http://i.imgur.com/WPaknth.jpg
+			var page = window.location.hash.substring(1);
+			if(page == '')
+				page = 'index';
+			var cookies = document.cookie.split(';');
+			for(var i in cookies) {
+				var cookie = cookies[i].replace(/ /g, '').split('=');
+				if(cookie[0] == 'admin' && cookie[1] == '1')
+					document.write('<a href="/levels/3/admin?page=' + page + '">Edit this page</a>');
+			}
+		</script>
+	</body>
+</html>

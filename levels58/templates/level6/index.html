@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Student Center</title>
+		<link rel="icon" type="image/png" href="/static/favicon.png" />
+		<!--
+		In this level, there are 6 vulnerabilities, falling into the following classes:
+		Reflected/Stored XSS
+		SQL Injection
+		CSRF
+		
+		Have fun!
+
+		Note: Your changes are only persisted for your current session.
+		-->
+	</head>
+	<body>
+		<h1>Student Center</h1>
+		<a href="{{ handler.level6.get_add }}">Add Student</a>
+		<br>
+		<table>
+			<thead>
+				<th>ID</th>
+				<th>Last Name</th>
+				<th>First Name</th>
+				<th>&nbsp;</th>
+			</thead>
+			{% for student in students %}
+				<tr>
+					<td>{{ student[0] | safe }}</td>
+					<td>{{ student[1] }}</td>
+					<td>{{ student[2] }}</td>
+					<td><a href="{{ handler.level6.get_edit.url(student[0]) }}">Edit</a>
+				</tr>
+			{% endfor %}
+		</table>
+		<form>
+			Filter: <input type="text" name="filter" value="{{ filter | safe }}">
+			<input type="submit" value="Filter">
+		</form>
+	</body>
+</html>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Document Repository</title>
+		<link rel="icon" type="image/png" href="/static/favicon.png" />
+		<!--
+		In this level, there are 6 vulnerabilities, falling into the following classes:
+		Directory Traversal
+		Reflected XSS
+		Command Injection
+
+		Have fun!
+		-->
+	</head>
+	<body>
+		<h1>Document Repository -- {{ path }}</h1>
+		<br>
+		<ul>
+			{% for dir in dirs %}
+				<li><a href="{{ handler.level5.get_index }}?path={{ path + dir }}">{{ dir }}/</a></li>
+			{% endfor %}
+			{% for file in files %}
+				<li><a href="{{ handler.level5.get_read }}?path={{ path + file }}">{{ file }}</a></li>
+			{% endfor %}
+		</ul>
+		<br>
+		<form action="{{ handler.level5.post_search }}" method="POST">$CSRF$
+			<input type="hidden" name="path" value="{{ path }}">
+			Search in directory: <input type="text" name="text"><br>
+			<input type="submit" value="Search">
+		</form>
+	</body>
+</html>

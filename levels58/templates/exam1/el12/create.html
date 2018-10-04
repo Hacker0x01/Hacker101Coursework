@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+	<head>
+		<title>New Page &mdash; Breaker Wiki</title>
+		<link rel="icon" type="image/png" href="/static/favicon.png" />
+	</head>
+	<body>
+		<h1>Create Page</h1>
+		<form action="{{ handler.el12.post_edit }}" method="POST">$CSRF$
+			Name: <input type="text" name="page" value="{{ page }}"><br>
+			<textarea name="body" cols="80" rows="10">{{ body }}</textarea><br>
+			<input type="submit" value="Save">
+		</form>
+	</body>
+</html>

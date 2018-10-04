@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+	<head>
+		<title>First Bank of Breakerville</title>
+		<link rel="icon" type="image/png" href="/favicon.png" />
+		<!--
+		In this level, there are 4 vulnerabilities, falling into the following classes:
+		CSRF
+		Reflected XSS
+		Authorization Bypass/Direct Object Reference
+
+		Have fun!
+		-->
+	</head>
+	<body>
+		<h1>Breakerbank</h1>
+		Your account number: ${ acct_num }<br>
+		% if message:
+			<br>
+			<b>${ message | h }</b>
+		% endif
+		% if error:
+			<br>
+			<span style="color: red">${ error | h }</span>
+		% endif
+		<br>
+		<form action="/levels/0/" method="POST">
+			<h2>Transfer Funds</h2>
+			Destination account: <input type="input" name="to" value="${ to | h }"><br>
+			Amount: <input type="input" name="amount" value="${ amount }">
+			<br>
+			<br>
+			<input type="submit" value="Transfer">
+		</form>
+		<br>
+		You can send friends your <a href="?to=${ acct_num }">personal payment link</a> to allow them to easily send you money!<br>
+		<br>
+		% if error == 'Amounts must be greater than zero':
+			<a href="/static/report0.txt">Sample bug report for this level</a>
+		% else:
+			<!--P.S. You can see a sample bug report for this level here, once you've poked around a bit (Hint: think about how you would transfer funds from one person to another.  Arithmetic!).  There are a number of other hints around.  Watch the source! -->
+		% endif
+	</body>
+</html>

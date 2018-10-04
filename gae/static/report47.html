@@ -1,0 +1,338 @@
+<h1>Level4</h1>
+
+<h2>Improper Identity Handling</h2>
+
+<p><strong>Severity</strong>: Low</p>
+
+<p><strong>Description</strong>: Due to a lack of control over usernames, it is possible for multiple usernames to conflict, appearing as the same user.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>In your Google Account, change your nickname to <code>daeken</code></li>
+<li>Make a post on the site</li>
+<li>Note that it shows up under the name <code>daeken</code>, the administrator for the site</li>
+</ol>
+
+<p><strong>Impact</strong>: It is possible for a malicious user to impersonate another user, leading to confusion.</p>
+
+<p><strong>Mitigation</strong>: User names should be made unique by storing them locally along with other user data.</p>
+
+<p><strong>Affected Assets</strong>: Systemic</p>
+
+<h2>Systemic Information Disclosures</h2>
+
+<p><strong>Severity</strong>: Low</p>
+
+<p><strong>Description</strong>: The application is configured to show tracebacks upon unhandled exceptions, revealing system information.</p>
+
+<p><strong>Impact</strong>: An attacker may be able to see system paths, code snippets, and other bits of data that could make other attacks easier or viable.</p>
+
+<p><strong>Mitigation</strong>: Unhandled exceptions should show an "Internal Error" page rather than a traceback.</p>
+
+<p><strong>Affected Assets</strong>: Systemic</p>
+
+<h2>Unchecked Redirects</h2>
+
+<p><strong>Severity</strong>: Low</p>
+
+<p><strong>Description</strong>: The application redirects after submission of votes and deletes using a <code>from</code> field in the request.  This can be set to any URL, allowing arbitrary redirection.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>Go to the delete page for a story you have submitted</li>
+<li>Change the <code>from</code> field in the form to: <code>http://google.com/</code></li>
+<li>Submit the deletion</li>
+<li>Note that you are redirected to Google's homepage</li>
+</ol>
+
+<p><strong>Impact</strong>: An attacker could trick a user into utilizing a fake site, potentially compromising their login credentials.</p>
+
+<p><strong>Affected Assets</strong>:</p>
+
+<ol>
+<li>http://breaker-studentcenter.appspot.com/levels/4/delete</li>
+<li>http://breaker-studentcenter.appspot.com/levels/4/vote</li>
+</ol>
+
+<h2>Reflected XSS</h2>
+
+<p><strong>Severity</strong>: Medium</p>
+
+<p><strong>Description</strong>: The application's delete function contains a number of inputs that are not properly escaped: <code>id</code>, <code>type</code>, and <code>from</code>.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>Go to http://breaker-studentcenter.appspot.com/levels/4/delete?id=4892534685827072&amp;type=Story&amp;from=%22%3E%3Cscript%3Ealert(1)%3B%3C/script%3E</li>
+<li>Note that an alert dialog is shown</li>
+</ol>
+
+<p><strong>Impact</strong>: This vulnerability allows an attacker to perform any tasks she desires, as an arbitrary user whom she convinces to click a link containing an XSS payload.</p>
+
+<p><strong>Mitigation</strong>: All user input must be escaped before displaying to the page, in order to properly mitigate XSS issues.</p>
+
+<p><strong>Affected Assets</strong>: http://breaker-studentcenter.appspot.com/levels/4/delete</p>
+
+<h2>Cross-Site Request Forgery</h2>
+
+<p><strong>Severity</strong>: High</p>
+
+<p><strong>Description</strong>: The voting and deletion functionality are vulnerable to CSRF due to no session-specific random token being attached to the form.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>Go to the delete page for a story or comment</li>
+<li>Note that no CSRF token is included in the request</li>
+</ol>
+
+<p><strong>Impact</strong>: Due to the simple nature of this vulnerability, it's possible for an attacker to add students to the account of a victim whom he can convince to access a page controlled by the attacker.</p>
+
+<p><strong>Mitigation</strong>: Proper CSRF tokens should be used on all forms and validated upon submission.  In addition, in the case of voting, state-changing behavior should not be performed via GET.  You can read more here: https://www.owasp.org/index.php/Cross-Site<em>Request</em>Forgery_(CSRF)</p>
+
+<p><strong>Affected Assets</strong>:</p>
+
+<ol>
+<li>http://breaker-studentcenter.appspot.com/levels/4/delete</li>
+<li>http://breaker-studentcenter.appspot.com/levels/4/vote</li>
+</ol>
+
+<h2>Stored XSS</h2>
+
+<p><strong>Severity</strong>: High</p>
+
+<p><strong>Description</strong>: The domain field of submitted stories is not properly escaped when being displayed, making it possible to embed stored XSS payloads in pages.  In addition, user nicknames are not escaped for output.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>Go to http://breaker-studentcenter.appspot.com/levels/4/submit</li>
+<li>Enter a title and the following URL: <code>http://google.com&lt;img src="404" onerror="console.log(12345);"&gt;</code></li>
+<li>Note that an alert dialog is shown</li>
+</ol>
+
+<p><strong>Impact</strong>: This vulnerability allows an attacker to perform any tasks she desires, as an arbitrary user whom she convinces to click a link containing an XSS payload.</p>
+
+<p><strong>Mitigation</strong>: All user input must be escaped before displaying to the page, in order to properly mitigate XSS issues.</p>
+
+<p><strong>Affected Assets</strong>:</p>
+
+<ol>
+<li>http://breaker-studentcenter.appspot.com/levels/4/submit -- Domain XSS</li>
+<li>http://breaker-studentcenter.appspot.com/levels/4/ and http://breaker-studentcenter.appspot.com/levels/4/comments -- User nicknames</li>
+</ol>
+
+<h1>Level5</h1>
+
+<h2>Reflected XSS</h2>
+
+<p><strong>Severity</strong>: Low</p>
+
+<p><strong>Description</strong>: The application's browsing and <code>read</code> functions receive a <code>path</code> field in the query string.  In the case of reading a non-existent file or directory, this field is not properly encoded before display to the user.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>Go to http://breaker101.herokuapp.com/level5/read?path=nonexistent%3Cscript%3Ealert(1);%3C/script%3E</li>
+<li>Note that an alert dialog is shown</li>
+</ol>
+
+<p><strong>Impact</strong>: This vulnerability allows an attacker to perform any tasks she desires, as an arbitrary user whom she convinces to click a link containing an XSS payload.</p>
+
+<p><strong>Mitigation</strong>: All user input must be escaped before displaying to the page, in order to properly mitigate XSS issues.</p>
+
+<p><strong>Affected Assets</strong>:</p>
+
+<ol>
+<li>http://breaker101.herokuapp.com/level5</li>
+<li>http://breaker101.herokuapp.com/level5/read</li>
+</ol>
+
+<h2>Directory Traversal</h2>
+
+<p><strong>Severity</strong>: Critical</p>
+
+<p><strong>Description</strong>: The directory browsing function of the application is vulnerable to directory traversal in the <code>path</code> field, due to a lack of sanitization on user-provided paths.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>Go to http://breaker101.herokuapp.com/level5?path=../../../../../../etc</li>
+<li>Note that the contents of the <code>/etc</code> directory are shown</li>
+</ol>
+
+<p><strong>Impact</strong>: This vulnerability allows an attacker to arbitrarily browse the filesystem, revealing the locations and filenames of every file on the system that the web application can access.</p>
+
+<p><strong>Mitigation</strong>: Paths constructed using user input should have instances of <code>../</code> (and <code>..\</code>) removed.  Alternatively, detection of such traversal attacks and failing early would potentially make this more resilient.</p>
+
+<p><strong>Affected Assets</strong>: http://breaker101.herokuapp.com/level5</p>
+
+<h2>Directory Traversal</h2>
+
+<p><strong>Severity</strong>: Critical</p>
+
+<p><strong>Description</strong>: The file reading function of the application is vulnerable to directory traversal in the <code>path</code> field, due to improper sanitization on user-provided paths.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>Go to http://breaker101.herokuapp.com/level5/read?path=....//....//....//....//....//....//etc/passwd</li>
+<li>Note that the contents of the <code>/etc/passwd</code> file is shown</li>
+</ol>
+
+<p><strong>Impact</strong>: This vulnerability allows an attacker to arbitrarily read files from the filesystem, revealing contents of any file on the system that the web application can access.</p>
+
+<p><strong>Mitigation</strong>: Paths constructed using user input should have instances of <code>../</code> (and <code>..\</code>) removed.  Alternatively, detection of such traversal attacks and failing early would potentially make this more resilient.</p>
+
+<p><strong>Affected Assets</strong>: http://breaker101.herokuapp.com/level5/read</p>
+
+<h2>Command Injection</h2>
+
+<p><strong>Severity</strong>: Critical</p>
+
+<p><strong>Description</strong>: Due to a lack of escaping for search queries, it's possible to execute arbitrary commands on the system in the context of the web application.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>Go to the application</li>
+<li>In the <code>Search in directory</code> field, insert the following: <code>" | echo "Arbitrary Code</code></li>
+<li>Note that the string "Arbitrary Code" is printed</li>
+</ol>
+
+<p><strong>Impact</strong>: This vulnerability allows an attacker to execute any command on the server, in the context of the web application.  This allows effectively a complete compromise of any security controls put in place.</p>
+
+<p><strong>Mitigation</strong>: All user input used in the creation of command lines should be properly quoted and escaped prior to inclusion.  When possible, avoid the construction of command lines using user input entirely.</p>
+
+<p><strong>Affected Assets</strong>: http://breaker101.herokuapp.com/level5/post_search</p>
+
+<h1>Level6</h1>
+
+<h2>Stored XSS</h2>
+
+<p><strong>Severity</strong>: Medium</p>
+
+<p><strong>Description</strong>: Due to improper sanitization of student last names, it's possible to embed stored XSS payloads in pages.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>Visit the "Add Student" page of the application</li>
+<li>Put the following in the <code>Last name</code> field: <code>"&gt;&lt;script&gt;alert(1)&lt;/script&gt;</code></li>
+<li>Add the student</li>
+<li>Go to the edit page for the newly added student</li>
+<li>Note that an alert dialog is shown</li>
+</ol>
+
+<p><strong>Impact</strong>: Stored XSS here makes it possible for an attacker to compromise user sessions.</p>
+
+<p><strong>Mitigation</strong>: All user input must be properly HTML escaped before output.</p>
+
+<p><strong>Affected Assets</strong>: http://breaker101.herokuapp.com/level6/edit</p>
+
+<h2>Reflected XSS</h2>
+
+<p><strong>Severity</strong>: Low</p>
+
+<p><strong>Description</strong>: Due to a lack of escaping on the <code>id</code> field on the rows returned from the database, it is possible for an attacker to embed HTML in pages.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>As an admin, visit the page <code>http://breaker101.herokuapp.com/level6?filter=+%27%29+UNION+SELECT+%27%3Cscript%3Ealert%281%29%3B%3C%2Fscript%3E%27%2C+1%2C+1+FROM+students+WHERE+%281%3D1+OR+%27test%27%3D%27</code></li>
+<li>Note that an alert dialog is shown</li>
+</ol>
+
+<p><strong>Impact</strong>: An attacker could compromise user sessions and execute code in the context of the page.</p>
+
+<p><strong>Mitigation</strong>: In this case, the SQL injection is what makes this attack possible, so mitigating that issue will fix this as well.  It is also possible (and recommended) that you escape the data returned by the database.</p>
+
+<p><strong>Affected Assets</strong>: http://breaker101.herokuapp.com/level6</p>
+
+<h2>SQL Injection</h2>
+
+<p><strong>Severity</strong>: Critical</p>
+
+<p><strong>Description</strong> Due to a lack of escaping on the following fields, it is possible to execute arbitrary SQL in the application.</p>
+
+<ul>
+<li>ID parameter on the edit page</li>
+<li><code>firstname</code> and <code>lastname</code> fields to post_add</li>
+<li><code>filter</code> field on index page</li>
+</ul>
+
+<p><strong>Reproduction Steps</strong>: See 'Reflected XSS' for an example</p>
+
+<p><strong>Impact</strong>: An attacker can arbitrarily read and write to the database, compromising data integrity and confidentiality, in addition to potentially escalating privileges to circumvent security controls.</p>
+
+<p><strong>Affected Assets</strong>:</p>
+
+<ol>
+<li>http://breaker101.herokuapp.com/level6</li>
+<li>http://breaker101.herokuapp.com/level6/post_add</li>
+<li>http://breaker101.herokuapp.com/level6/edit</li>
+</ol>
+
+<h2>Cross-Site Request Forgery</h2>
+
+<p><strong>Severity</strong>: High</p>
+
+<p><strong>Description</strong>: The "Add Student" functionality is vulnerable to CSRF due to a lack of CSRF token validation.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>Go to the "Add Students" page</li>
+<li>Change or modify the CSRF token value in the form</li>
+<li>Submit the form</li>
+<li>Note that the student is added despite the token mismatch</li>
+</ol>
+
+<p><strong>Impact</strong>: Due to the simple nature of this vulnerability, it's possible for an attacker to add students to the account of a victim whom he can convince to access a page controlled by the attacker.</p>
+
+<p><strong>Mitigation</strong>: Proper CSRF tokens should be used on all forms and validated upon submission.  You can read more here: https://www.owasp.org/index.php/Cross-Site<em>Request</em>Forgery_(CSRF)</p>
+
+<p><strong>Affected Assets</strong>: http://breaker101.herokuapp.com/level6/post_add</p>
+
+<h1>Level7</h1>
+
+<h2>Reflected XSS</h2>
+
+<p><strong>Severity</strong>: Low</p>
+
+<p><strong>Description</strong>: The application shows the previously submitted username and password upon login failure.  The password field is not properly escaped when reflected to the user.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>Go to http://breaker101.herokuapp.com/level7</li>
+<li>Submit any username with the password: <code>"&gt;&lt;script&gt;alert(1);&lt;/script&gt;</code></li>
+<li>Note that an alert dialog is shown</li>
+</ol>
+
+<p><strong>Impact</strong>: This vulnerability allows an attacker to perform any tasks she desires, as an arbitrary user whom she convinces to click a link containing an XSS payload.</p>
+
+<p><strong>Mitigation</strong>: All user input must be escaped before displaying to the page, in order to properly mitigate XSS issues.</p>
+
+<p><strong>Affected Assets</strong>: http://breaker101.herokuapp.com/level7/post_index</p>
+
+<h2>SQL Injection</h2>
+
+<p><strong>Severity</strong>: Critical</p>
+
+<p><strong>Description</strong> Due to a lack of escaping on username field, it is possible to execute arbitrary SQL in the application.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>Go to http://breaker101.herokuapp.com/level7</li>
+<li>Enter the password <code>password</code> and the following username: <code>' UNION SELECT 'password</code></li>
+<li>Note that you are successfully logged in</li>
+</ol>
+
+<p><strong>Impact</strong>: An attacker can arbitrarily read and write to the database, compromising data integrity and confidentiality, in addition to potentially escalating privileges to circumvent security controls.</p>
+
+<p><strong>Affected Assets</strong>: http://breaker101.herokuapp.com/level7/post_index</p>
+

@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Exam 1</title>
+		<link rel="icon" type="image/png" href="/static/favicon.png" />
+	</head>
+	<body>
+		<h1>Exam 1</h1>
+		<p>Welcome to the first exam.  Create a user or login to continue.  The user system is not known to be buggy (not that I expect that will deter any of you from trying to break it!)</p>
+		<p style="font-weight: bold">Note well: Once you create an account, you only have 4 hours of testing before you get locked out of the system!  Make your time count, and make sure that you do <i>all</i> the coursework before attempting the exam.<!-- Level 5 is your friend! --></p>
+		{% if error != None %}
+		<span style="color: red">{{ error }}</span>
+		{% endif %}
+		<h2>Create user</h2>
+		<form action="{{ handler.exam1.post_create_user }}" method="POST">$CSRF$
+			Username: <input type="text" name="username"><br>
+			Password: <input type="password" name="password"><br>
+			Confirm password: <input type="password" name="confirm"><br>
+			<p>Note: Your password is being transmitted in cleartext, and I'm storing it that way as well.  You should <b>NOT</b> be using a real password here.</p>
+			<input type="submit" value="Create">
+		</form>
+		<h2>Log In</h2>
+		<form action="{{ handler.exam1.post_login }}" method="POST">$CSRF$
+			Username: <input type="text" name="username"><br>
+			Password: <input type="password" name="password"><br>
+			<input type="submit" value="Log In">
+		</form>
+	</body>
+</html>

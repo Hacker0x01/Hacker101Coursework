@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+	<head>
+		<title>{{ page }} &mdash; Breaker Wiki</title>
+		<link rel="icon" type="image/png" href="/static/favicon.png" />
+	</head>
+	<body>
+		<a href="/el12">Home</a>
+		<h1>{{ page }}</h1>
+		{% if not found %}
+			Page does not exist.  <a href="{{ handler.el12.get_create.url(page=page) }}">Create it</a>
+		{% else %}
+			{{ body | safe }}
+			<br>
+			<br>
+			<a href="{{ handler.el12.get_edit.url(page=page) }}">Edit this page</a> or <a href="{{ handler.el12.get_create }}">create a new page</a>
+		{% endif %}
+	</body>
+</html>

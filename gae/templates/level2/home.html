@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Breaker Profile</title>
+		<link rel="icon" type="image/png" href="/favicon.png" />
+		<!--
+		In this level, there are 7 vulnerabilities, falling into the following classes:
+		Stored XSS
+		Reflected XSS
+		Unrelated Bonus
+
+		Have fun!
+		-->
+	</head>
+	<body>
+		<h1>Your Breaker Profile</h1>
+		<img src="${ profile.pic }" width="64" height="64" style="padding: 5px; border: 2px solid gray;">
+		<h2>${ profile.nickname | h }</h2>
+		<p><b>Description:</b> ${ profile.html_desc() }</p>
+		% if editable:
+			<a href="edit?id=${ profile.key().id() }">Edit your profile</a>
+		% endif
+		<a href="?id=${ profile.key().id() }">Link to your profile</a>
+	</body>
+</html>

@@ -1,0 +1,26 @@
+Here's a simple bug report for level 0.  There are quite a few other bugs to find, so don't think you can get away with just this one!
+
+Title: Cross-Site Request Forgery
+
+Severity: Critical
+
+Description: The "Transfer Funds" functionality is vulnerable to CSRF due to no session-specific random token being attached to the form.
+
+Reproduction Steps:
+1) Go to the Transfer Funds page
+2) Submit a funds transfer
+3) Note that the only data transmitted is the destination and the amount.
+
+You can also use the following proof of concept to submit an automatic transfer:
+<body onload="document.forms[0].submit()">
+	<form action="http://h101levels.appspot.com/levels/0/" method="POST">
+		<input type="hidden" name="amount" value="1000000">
+		<input type="hidden" name="to" value="1625">
+	</form>
+</body>
+
+Impact: Due to the simple nature of this vulnerability, it's possible for an attacker to transfer funds from any victim whom he can convince to access a page controlled by the attacker.  In this proof of concept, it's done via form autosubmission in plain view, but this could be performed in a hidden IFrame, leaving the user no clue that an attack has happened at all.
+
+Mitigation: Proper CSRF tokens should be used on all forms.  You can read more here: https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)
+
+Affected Assets: http://h101levels.appspot.com/levels/0

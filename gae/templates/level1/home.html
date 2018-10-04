@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Breakbook</title>
+		<link rel="icon" type="image/png" href="/favicon.png" />
+		<!--
+		In this level, there are 4 vulnerabilities, falling into the following classes:
+		CSRF
+		Stored XSS
+		Forced Browsing
+
+		Have fun!
+		-->
+	</head>
+	<body>
+		<h1>Breakbook</h1>
+		<form action="post" method="POST">
+			What's on your mind?<br>
+			<textarea cols="40" rows="3" name="status"></textarea><br>
+			<small>HTML disallowed, but links will be clickable.</small><br>
+			<input type="hidden" name="csrf" value="${ csrf }">
+			<input type="submit">
+		</form>
+		<h1>Feed</h1>
+		<table border="1">
+			% for i, post in posts:
+				<tr>
+					<td><img src="/favicon.png" width="64" height="64"></td>
+					<td>${ post.by.nickname() | h }</td>
+					<td>${ post.contents }</td>
+					<td><a href="post?id=${ i }">Permalink</a></td>
+				</tr>
+			% endfor
+				<tr>
+					<td><img src="/favicon.png" width="64" height="64"></td>
+					<td>Admin</td>
+					<td>Don't forget to check out <a href="https://hacker101.com/">http://breaker101.com/</a> for all the latest news!</td>
+				</tr>
+		</table>
+	</body>
+</html>

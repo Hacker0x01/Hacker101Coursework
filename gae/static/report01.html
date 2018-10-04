@@ -1,0 +1,168 @@
+<h1>Level0</h1>
+
+<h2>Cross-Site Request Forgery</h2>
+
+<p><strong>Severity</strong>: Critical</p>
+
+<p><strong>Description</strong>: The "Transfer Funds" functionality is vulnerable to CSRF due to no session-specific random token being attached to the form.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>Go to the Transfer Funds page</li>
+<li>Submit a funds transfer</li>
+<li>Note that the only data transmitted is the destination and the amount.</li>
+</ol>
+
+<p>You can also use the following proof of concept to submit an automatic transfer:</p>
+
+<pre><code>&lt;body onload="document.forms[0].submit()"&gt;
+    &lt;form action="http://breaker-studentcenter.appspot.com/levels/0/" method="POST"&gt;
+        &lt;input type="hidden" name="amount" value="1000000"&gt;
+        &lt;input type="hidden" name="to" value="1625"&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+</code></pre>
+
+<p><strong>Impact</strong>: Due to the simple nature of this vulnerability, it's possible for an attacker to transfer funds from any victim whom he can convince to access a page controlled by the attacker.  In this proof of concept, it's done via form autosubmission in plain view, but this could be performed in a hidden IFrame, leaving the user no clue that an attack has happened at all.</p>
+
+<p><strong>Mitigation</strong>: Proper CSRF tokens should be used on all forms.  You can read more here: https://www.owasp.org/index.php/Cross-Site<em>Request</em>Forgery_(CSRF)</p>
+
+<p><strong>Affected Assets</strong>: http://breaker-studentcenter.appspot.com/levels/0</p>
+
+<h2>Reflected XSS</h2>
+
+<p><strong>Severity</strong>: Critical</p>
+
+<p><strong>Description</strong>: The <code>amount</code> field of transfers is vulnerable to reflected XSS due to a lack of safe escaping.
+This can be triggered via GET (to auto-fill the <code>to</code> and <code>amount</code> fields) or via error cases on POST.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>Go to the Transfer Funds page</li>
+<li>Enter anything into the <code>to</code> field and in the amount field enter <code>"&gt;&lt;script&gt;alert(1);&lt;/script&gt;</code></li>
+<li>Submit the transfer</li>
+<li>Note that a script tag has been added to the page; depending on XSS protection settings, you may see an alert box as well</li>
+</ol>
+
+<p><strong>Impact</strong>: This vulnerability allows an attacker to perform any tasks she desires, as an arbitrary user whom she convinces to click a link containing an XSS payload.
+This means that an attacker could distribute a payload that causes any user to transfer money to her.</p>
+
+<p><strong>Mitigation</strong>: All user input must be escaped before displaying to the page, in order to properly mitigate XSS issues.
+In this case, it may also be a good idea to convert the amount value to an integer first, as this would completely eliminate the possibility of user input compromising the page.</p>
+
+<p><strong>Affected Assets</strong>: http://breaker-studentcenter.appspot.com/levels/0</p>
+
+<h2>Direct Object Reference</h2>
+
+<p><strong>Severity</strong>: Critical</p>
+
+<p><strong>Description</strong>: In addition to the normal <code>to</code> field on transfers, the <code>from</code> field is also accepted, allowing you to specify the account you're transferring from; authentication for the accounts is not required.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<p>The following proof of concept performs an automatic transfer from account 1 to account 2, regardless of whether or not you are logged into either account:</p>
+
+<pre><code>&lt;body onload="document.forms[0].submit()"&gt;
+    &lt;form action="http://breaker-studentcenter.appspot.com/levels/0/" method="POST"&gt;
+        &lt;input type="hidden" name="amount" value="1000000"&gt;
+        &lt;input type="hidden" name="from" value="1"&gt;
+        &lt;input type="hidden" name="to" value="2"&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+</code></pre>
+
+<p><strong>Impact</strong>: Due to the lack of authorization and the ability to directly reference accounts, this makes it trivial for an attacker to transfer funds between any account.</p>
+
+<p><strong>Mitigation</strong>: The <code>from</code> field should be ignored or -- at the very least -- checked against the account(s) attached to the logged in user.</p>
+
+<p><strong>Affected Assets</strong>: http://breaker-studentcenter.appspot.com/levels/0</p>
+
+<h1>Level1</h1>
+
+<h2>CSRF Tokens Validated Improperly</h2>
+
+<p><strong>Severity</strong>: Medium</p>
+
+<p><strong>Description</strong>: While the application uses CSRF tokens, its only validation for them is to ensure that they are 32 characters long.  This check is inadequate as any CSRF token (or, indeed, any string of the proper length) will pass the check.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>Submit a wall post</li>
+<li>Intercept the post with Burp Proxy</li>
+<li>Change the CSRF token to any other value</li>
+<li>Note that the post was successful</li>
+</ol>
+
+<p><strong>Impact</strong>: Due to the simple nature of this vulnerability, it's possible for an attacker to post to the wall of any victim whom he can convince to access a page controlled by the attacker.</p>
+
+<p><strong>Mitigation</strong>: CSRF tokens must be compared in entirety, preferably in constant time to reduce the likelihood of timing attacks.</p>
+
+<p><strong>Affected Assets</strong>: http://breaker-studentcenter.appspot.com/levels/1</p>
+
+<h2>CSRF Tokens Easily Guessed</h2>
+
+<p><strong>Severity</strong>: Medium</p>
+
+<p><strong>Description</strong>: While the application uses CSRF tokens, they are not generated randomly, as per standard practice.  Instead, they are generated as the MD5 of the user's account nickname.  This makes it trivial to guess the CSRF token and falsify it for targeted attacks.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>Look at the CSRF token on the page</li>
+<li>Run the command <code>echo -n your.nickname | md5sum</code> at the command line</li>
+<li>Note that the output of this command matches the CSRF token</li>
+</ol>
+
+<p><strong>Impact</strong>: Due to the ease with which these tokens can be guessed, it is trivial for an attacker to perform targeted attacks against a given user.</p>
+
+<p><strong>Mitigation</strong>: CSRF tokens must be generated randomly upon creation of each user's session.</p>
+
+<p><strong>Affected Assets</strong>: http://breaker-studentcenter.appspot.com/levels/1</p>
+
+<h2>Stored XSS</h2>
+
+<p><strong>Severity</strong>: Medium</p>
+
+<p><strong>Description</strong>: Due to improper handling of links, it's possible to embed stored XSS payloads in wall posts.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>Submit a wall post including the URL <code>http://google.com"onmousover="alert(1)</code></li>
+<li>Hover over the link in the submitted post</li>
+<li>Note that an alert dialog is triggered</li>
+</ol>
+
+<p><strong>Impact</strong>: Stored XSS here makes it possible for an attacker to easily impersonate a user's behavior.  Due to the fact that the attacker could force a user to make new posts, it's possible that self-sustaining malware could be distributed utilizing this vulnerability.</p>
+
+<p><strong>Mitigation</strong>: All user input -- including these links -- must be properly HTML escaped before output.</p>
+
+<p><strong>Affected Assets</strong>: http://breaker-studentcenter.appspot.com/levels/1</p>
+
+<h2>Forced Browsing/Enumerable Post IDs</h2>
+
+<p><strong>Severity</strong>: Low</p>
+
+<p><strong>Description</strong>: Due to the use of incremental IDs and a lack of authorization checks, it's possible for users to enumerate the posts of others.</p>
+
+<p><strong>Reproduction Steps</strong>:</p>
+
+<ol>
+<li>View the page http://breaker-studentcenter.appspot.com/levels/1/post?id=0</li>
+<li>Note that you see a post by cody.brocious</li>
+<li>http://breaker-studentcenter.appspot.com/levels/1/post?id=1</li>
+<li>Note that you see a post by another user</li>
+<li>Continuing to increment the id will give you every post in the system.</li>
+</ol>
+
+<p><strong>Impact</strong>: An attacker can trivially read every single post in the system, regardless of the user's privacy.</p>
+
+<p><strong>Mitigation</strong>: If the intention is for posts to be private by default, authorization checks should be put in place to ensure that users are unable to access posts outside their permissions.
+In addition, IDs generated in a pseudo-random fashion would eliminate the ability to increment the IDs.
+Note well that neither of these conditions is sufficient to completely mitigate the issue; if users are still able to access posts without proper authorization, they can do so even if they can't easily guess post IDs.</p>
+
+<p><strong>Affected Assets</strong>: http://breaker-studentcenter.appspot.com/levels/1</p>
+

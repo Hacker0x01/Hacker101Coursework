@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Breaker News</title>
+		<link rel="icon" type="image/png" href="/favicon.png" />
+	</head>
+	<body>
+		<center><table bgcolor="#f6f6ef" border=0 cellpadding=0 cellspacing=0 width="75%">
+			<tr>
+				<td>
+					<table bgcolor="#dd00dd" width="100%">
+						<tr>
+							<td style="width: 120px"><b><a href="/levels/4/" style="text-decoration: none; color: black">Breaker News</a></b></td>
+							<td><a style="text-decoration: none; color: black" href="/levels/4/submit">Submit</a></td>
+							<td style="text-align: right;">
+								${ user.nickname() | h } (${ curuser.karma })
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td width="100%">
+					<br>
+					<form method="POST">
+						<b>Title:</b> <input type="text" name="title" style="width: 40em"> <small>(80 characters max)</small><br>
+						<b>URL:</b> <input type="text" name="link" style="width: 40em"><br>
+						<input type="hidden" name="csrf" value="${ csrf }">
+						<br>
+						<input type="submit" value="Submit">
+					</form>
+				</td>
+			</tr>
+		</table></center>
+	</body>
+</html>

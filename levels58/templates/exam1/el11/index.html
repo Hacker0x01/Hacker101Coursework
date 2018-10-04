@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Breaksys Router Administration</title>
+		<link rel="icon" type="image/png" href="/static/favicon.png" />
+	</head>
+	<body>
+		<h1>Breaksys Router Login</h1>
+		{% if message %}
+			<h2 style="color: blue">{{ message }}</h2>
+		{% endif %}
+		{% if not admin %}
+			<form action="{{ handler.el11.post_login }}" method="POST">$CSRF$
+				<h2>Log In</h2>
+				Username: <input type="text" name="username"><br>
+				Password: <input type="text" name="password"><br>
+				<input type="submit">
+			</form>
+		{% else %}
+			<p>Logged in as {{ settings['admin_username'] | safe }}.  <a href="{{ handler.el11.get_logout }}">Log out</a></p>
+		{% endif %}
+		<h2>Status</h2>
+		<table border="1">
+			<tr><td>SSID</td><td>
+				{% if admin %}
+					<form action="{{ handler.el11.post_set }}" method="POST">
+						<input type="hidden" name="k" value="ssid">
+						<input type="text" name="v" value="{{ settings['ssid'] }}">
+						<input type="submit" value="Save">
+					</form>
+				{% else %}
+					{{ settings['ssid'] }}
+				{% endif %}
+			</td></tr>
+			<tr><td>Router IP</td><td>
+				{% if admin %}
+					<form action="{{ handler.el11.post_set }}" method="POST">
+						<input type="hidden" name="k" value="int_ip">
+						<input type="text" name="v" value="{{ settings['int_ip'] }}">
+						<input type="submit" value="Save">
+					</form>
+				{% else %}
+					{{ settings['int_ip'] }}
+				{% endif %}
+
+			</td></tr>
+		</table>
+
+		{% if admin %}
+			<h2>Diagnostics</h2>
+			<form action="{{ handler.el11.get_diag }}" method="GET">
+				<input type="hidden" name="cmd" value="ping">
+				<input type="hidden" name="param0" value="-c">
+				<input type="hidden" name="param1" value="3">
+				Ping: <input type="text" name="param2" value="google.com"> <input type="submit" value="Run"><br>
+			</form>
+			<form action="{{ handler.el11.get_diag }}" method="GET">
+				<input type="hidden" name="cmd" value="traceroute">
+				Traceroute: <input type="text" name="param0" value="google.com"> <input type="submit" value="Run"><br>
+			</form>
+			<!-- {{ settings | safe }} -->
+		{% endif %}
+	</body>
+</html>

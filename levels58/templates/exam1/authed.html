@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Exam 1</title>
+		<link rel="icon" type="image/png" href="/static/favicon.png" />
+	</head>
+	<body>
+		<h1>Exam 1</h1>
+		<p style="font-weight: bold">Time remaining: {{ hours }} hours, {{ minutes }} minutes.</p>
+		<p>
+			I recommend that you go level-by-level, but if you find yourself getting hung up on one of the levels, skip around.  <!--Use coursework level5 to help out!-->  Levels are unlocked by certain actions in each one, but that doesn't necessarily mean that you found all the bugs in that level, especially XSS, CSRF, and the like.
+		</p>
+		<p>
+			Due to the nature of the vulnerabilities you're testing, it's entirely possible that you could compromise the integrity of pretty much every control that's in place here.  That means that you <i>could</i> extend the timeframe you have for the exam, and things like that.  Please don't do that!
+		</p>
+		<p>
+			You can email your report to cody.brocious+course@gmail.com with the subject [Coursework] Exam 1.  Thanks!
+		</p>
+		<ul>
+			<li><a href="/el10" target="_blank">Exam Level 0</a></li>
+			<li>
+				{% if level > 0 %}
+					<a href="/el11" target="_blank">Exam Level 1</a>
+				{% else %}
+					Exam Level 1 &mdash; Locked
+				{% endif %}
+			</li>
+			<li>
+				{% if level > 1 %}
+					<a href="/el12" target="_blank">Exam Level 2</a>
+				{% else %}
+					Exam Level 2 &mdash; Locked
+				{% endif %}
+			</li>
+			<li>
+				{% if level > 2 %}
+					<a href="/el13" target="_blank">Exam Level 3</a>
+				{% else %}
+					Exam Level 3 &mdash; Locked
+				{% endif %}
+			</li>
+		</ul>
+	</body>
+</html>

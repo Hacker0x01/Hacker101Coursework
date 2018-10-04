@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Breaker Feedback</title>
+		<link rel="icon" type="image/png" href="/static/favicon.png" />
+	</head>
+	<body>
+		<h1>Breaker Feedback</h1>
+		<form action="{{ handler.el13.post_login }}" method="POST">$CSRF$
+			<h2>Admin login</h2>
+			Username: <input type="text" name="username"><br>
+			Password: <input type="text" name="password"><br>
+			<input type="submit">
+		</form>
+	</body>
+</html>

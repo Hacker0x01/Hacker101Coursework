@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Student Center</title>
+		<link rel="icon" type="image/png" href="/static/favicon.png" />
+	</head>
+	<body>
+		<h1>Edit student {{ student[1] }}, {{ student[2] }}</h1>
+		<br>
+		<form action="{{ handler.level6.post_edit.url(student[0]) }}" method="POST">$CSRF$
+			First name: <input type="text" name="firstname" value="{{ student[2] }}"><br>
+			Last name: <input type="text" name="lastname" value="{{ student[1] | safe }}"><br>
+			<br>
+			<input type="submit" value="Save">
+		</form>
+	</body>
+</html>

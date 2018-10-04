@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Post ${ post.key().id() } &mdash; Breakbook</title>
+		<link rel="icon" type="image/png" href="/favicon.png" />
+	</head>
+	<body>
+		<h1><a href="/levels/1/">Breakbook</a></h1>
+		<table border="1">
+			<tr>
+				<td><img src="/favicon.png" width="64" height="64"></td>
+				<td>${ post.by.nickname() | h }</td>
+				<td>${ post.contents }</td>
+			</tr>
+		</table>
+	</body>
+</html>

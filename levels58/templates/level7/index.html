@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Guardian</title>
+		<link rel="icon" type="image/png" href="/static/favicon.png" />
+		<!--
+		In this level, there are 2 vulnerabilities, falling into the following classes:
+		SQL Injection
+		Reflected XSS
+		
+		Have fun!
+		-->
+	</head>
+	<body>
+		<h1>Guardian</h1>
+		<form action="{{ handler.level7.post_index }}" method="POST">$CSRF$
+			Username: <input type="text" name="username" value="{{ username }}"><br>
+			Password: <input type="text" name="password" value="{{ password | safe }}"><br>
+			<input type="submit" value="Log In">
+		</form><br>
+		<br>
+		{% if error is not none %}
+		<span style="color: red">{{ error }}</span>
+		{% endif %}
+	</body>
+</html>

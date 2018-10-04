@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+	<head>
+		<title>${ story.title | h } &mdash; Breaker News</title>
+		<link rel="icon" type="image/png" href="/favicon.png" />
+	</head>
+	<body>
+		<center><table bgcolor="#f6f6ef" border=0 cellpadding=0 cellspacing=0 width="75%">
+			<tr>
+				<td>
+					<table bgcolor="#dd00dd" width="100%">
+						<tr>
+							<td style="width: 120px"><b><a href="/levels/4/" style="text-decoration: none; color: black">Breaker News</a></b></td>
+							<td><a style="text-decoration: none; color: black" href="/levels/4/submit">Submit</a></td>
+							<td style="text-align: right;">
+								${ user.nickname() | h } (${ curuser.karma })
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td width="100%">
+					<table width="100%">
+						<tr>
+							<td style="width: 16px">
+								% if story.user != user and not dbuser.voted_on(story.key().id()):
+									<a href="vote?change=1&amp;type=Story&amp;id=${ story.key().id() }&amp;from=${ page_url }"><img src="/img/up.png"></a>
+								% endif
+							</td>
+							<td>
+								<a href="${ story.link | h }">${ story.title | h }</a> (${ story.domain })<br>
+								<i>${ story.votes } points by ${ story.user.nickname() }</i>
+								% if story.user == user:
+									&mdash; <a href="delete?id=${ story.key().id() }&amp;type=Story&amp;from=${ page_url }">delete</a>
+								% endif
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<form method="POST">
+						<textarea name="comment" width="40" height="5"></textarea><br>
+						<input type="hidden" name="csrf" value="${ csrf }">
+						<input type="submit" value="Comment">
+					</form>
+				</td>
+			</tr>
+			% for comment in story.comments:
+				<tr>
+					<td>
+						<table width="100%">
+							<tr>
+								<td style="width: 16px">
+									% if comment.user != user and not dbuser.voted_on(comment.key().id()):
+										<a href="vote?change=1&amp;type=Comment&amp;id=${ comment.key().id() }&amp;from=${ page_url }"><img src="/img/up.png"></a>
+										<a href="vote?change=-1&amp;type=Comment&amp;id=${ comment.key().id() }&amp;from=${ page_url }"><img src="/img/down.png"></a>
+									% endif
+								</td>
+								<td>
+									<i>${ comment.votes } points by ${ comment.user.nickname() }</i>
+									% if comment.user == user:
+										&mdash; <a href="delete?id=${ comment.key().id() }&amp;type=Comment&amp;from=${ page_url }">delete</a>
+									% endif
+								</td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td>
+									% for part in comment.content.split('\n'):
+										<p>${ part | h}</p>
+									% endfor
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			% endfor
+		</table></center>
+	</body>
+</html>

@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Breaker CMS Admin</title>
+		<link rel="icon" type="image/png" href="/favicon.png" />
+	</head>
+	<body>
+		<h1>Edit Page</h1>
+		<form method="POST">
+			<p><b>Page Title:</b> <input type="text" name="title" value="${ page.title | h }"></p>
+			<p><b>Page Body:</b> <textarea cols="40" rows="4" name="body">${ page.body | h }</textarea></p>
+			<p><small>Note: New HTML filtering is in force.  You can add links, but they can't use DOM events.  Scripts are forbidden for safety reasons.</small></p>
+			<input type="submit" value="Save">
+		</form>
+	</body>
+</html>

@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Breaker Feedback</title>
+		<link rel="icon" type="image/png" href="/static/favicon.png" />
+	</head>
+	<body>
+		<h1>Breaker Feedback</h1>
+		{% if message %}
+			<h2 style="color: blue">{{ message | safe }}</h2>
+		{% endif %}
+		
+		Leave feedback for the admins below:<br>
+		<form action="{{ handler.el13.post_message }}" method="POST">$CSRF$
+			Your name: <input type="text" name="name"><br>
+			<textarea name="message"></textarea><br>
+			<input type="submit">
+		</form>
+		<br>
+		<small><a href="{{ handler.el13.get_login }}">Log in to read submitted feedback</a></small>
+	</body>
+</html>

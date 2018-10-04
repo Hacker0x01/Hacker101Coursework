@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Guestbook</title>
+		<link rel="icon" type="image/png" href="/static/favicon.png" />
+	</head>
+	<body>
+		<h1>Breaker 101 Guestbook</h1><!-- Raise your hand if you remember the web in 1995 -->
+		{% if message %}
+			<h2 style="color: blue">{{ message | safe }}</h2>
+		{% endif %}
+		<form action="{{ handler.el10.post_index }}" method="POST">
+			<h2>Write in the guestbook!</h2>
+			Name: <input type="text" name="name"><br>
+			Email: <input type="text" name="email"><br>
+			<textarea name="body"></textarea><br>
+			<input type="submit">
+		</form>
+		{% for id, name, email, body, date in posts %}
+			<br>
+			<table border="1">
+				<tr>
+					<td><b>Name</b></td>
+					<td>{{ name }}</td>
+				</tr>
+				<tr>
+					<td><b>Email</b></td>
+					<td><a href="mailto:{{ email | safe }}">{{ email }}</a></td>
+				</tr>
+				<tr>
+					<td><b>Date</b></td>
+					<td>{{ date }}</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						{{ body }}
+					</td>
+				</tr>
+				{% if 'el10_admin' in session and session['el10_admin'] %}
+					<tr>
+						<td><a href="{{ handler.el10.get_delete.url(id) }}">Delete post</a></td>
+					</tr>
+				{% endif %}
+			</table>
+		{% endfor %}
+		<br>
+		{% if 'el10_admin' not in session or session['el10_admin'] == False %}
+			<a href="{{ handler.el10.get_admin_login }}">Admin login</a>
+		{% else %}
+			<a href="{{ handler.el10.get_admin_logout }}">Admin logout</a>
+		{% endif %}
+	</body>
+</html>

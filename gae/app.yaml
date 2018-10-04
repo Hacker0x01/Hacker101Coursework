@@ -1,0 +1,51 @@
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+builtins:
+- remote_api: on
+
+handlers:
+- url: /favicon\.png
+  static_files: static/favicon.png
+  upload: static/favicon\.png
+
+- url: /css
+  static_dir: static/css
+
+- url: /js
+  static_dir: static/js
+
+- url: /img
+  static_dir: static/img
+
+- url: /static
+  static_dir: static
+
+- url: /levels/0/.*
+  script: level0.app
+  login: required
+
+- url: /levels/1/.*
+  script: level1.app
+  login: required
+
+- url: /levels/2/.*
+  script: level2.app
+  login: required
+
+- url: /levels/3/.*
+  script: level3.app
+  login: required
+
+- url: /levels/4/.*
+  script: level4.app
+  login: required
+
+- url: .*
+  script: main.app
+  login: required
+
+libraries:
+- name: webapp2
+  version: "2.5.2"
