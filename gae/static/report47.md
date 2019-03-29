@@ -128,7 +128,7 @@ Reflected XSS
 
 **Reproduction Steps**:
 
-1. Go to http://breaker101.herokuapp.com/level5/read?path=nonexistent%3Cscript%3Ealert(1);%3C/script%3E
+1. Go to http://example.herokuapp.com/level5/read?path=nonexistent%3Cscript%3Ealert(1);%3C/script%3E
 2. Note that an alert dialog is shown
 
 **Impact**: This vulnerability allows an attacker to perform any tasks she desires, as an arbitrary user whom she convinces to click a link containing an XSS payload.
@@ -137,8 +137,8 @@ Reflected XSS
 
 **Affected Assets**:
 
-1. http://breaker101.herokuapp.com/level5
-2. http://breaker101.herokuapp.com/level5/read
+1. http://example.herokuapp.com/level5
+2. http://example.herokuapp.com/level5/read
 
 Directory Traversal
 -------------------
@@ -149,14 +149,14 @@ Directory Traversal
 
 **Reproduction Steps**:
 
-1. Go to http://breaker101.herokuapp.com/level5?path=../../../../../../etc
+1. Go to http://example.herokuapp.com/level5?path=../../../../../../etc
 2. Note that the contents of the `/etc` directory are shown
 
 **Impact**: This vulnerability allows an attacker to arbitrarily browse the filesystem, revealing the locations and filenames of every file on the system that the web application can access.
 
 **Mitigation**: Paths constructed using user input should have instances of `../` (and `..\`) removed.  Alternatively, detection of such traversal attacks and failing early would potentially make this more resilient.
 
-**Affected Assets**: http://breaker101.herokuapp.com/level5
+**Affected Assets**: http://example.herokuapp.com/level5
 
 Directory Traversal
 -------------------
@@ -167,14 +167,14 @@ Directory Traversal
 
 **Reproduction Steps**:
 
-1. Go to http://breaker101.herokuapp.com/level5/read?path=....//....//....//....//....//....//etc/passwd
+1. Go to http://example.herokuapp.com/level5/read?path=....//....//....//....//....//....//etc/passwd
 2. Note that the contents of the `/etc/passwd` file is shown
 
 **Impact**: This vulnerability allows an attacker to arbitrarily read files from the filesystem, revealing contents of any file on the system that the web application can access.
 
 **Mitigation**: Paths constructed using user input should have instances of `../` (and `..\`) removed.  Alternatively, detection of such traversal attacks and failing early would potentially make this more resilient.
 
-**Affected Assets**: http://breaker101.herokuapp.com/level5/read
+**Affected Assets**: http://example.herokuapp.com/level5/read
 
 Command Injection
 -----------------------
@@ -193,7 +193,7 @@ Command Injection
 
 **Mitigation**: All user input used in the creation of command lines should be properly quoted and escaped prior to inclusion.  When possible, avoid the construction of command lines using user input entirely.
 
-**Affected Assets**: http://breaker101.herokuapp.com/level5/post_search
+**Affected Assets**: http://example.herokuapp.com/level5/post_search
 
 Level6
 ======
@@ -217,7 +217,7 @@ Stored XSS
 
 **Mitigation**: All user input must be properly HTML escaped before output.
 
-**Affected Assets**: http://breaker101.herokuapp.com/level6/edit
+**Affected Assets**: http://example.herokuapp.com/level6/edit
 
 Reflected XSS
 -------------
@@ -228,14 +228,14 @@ Reflected XSS
 
 **Reproduction Steps**:
 
-1. As an admin, visit the page `http://breaker101.herokuapp.com/level6?filter=+%27%29+UNION+SELECT+%27%3Cscript%3Ealert%281%29%3B%3C%2Fscript%3E%27%2C+1%2C+1+FROM+students+WHERE+%281%3D1+OR+%27test%27%3D%27`
+1. As an admin, visit the page `http://example.herokuapp.com/level6?filter=+%27%29+UNION+SELECT+%27%3Cscript%3Ealert%281%29%3B%3C%2Fscript%3E%27%2C+1%2C+1+FROM+students+WHERE+%281%3D1+OR+%27test%27%3D%27`
 2. Note that an alert dialog is shown
 
 **Impact**: An attacker could compromise user sessions and execute code in the context of the page.
 
 **Mitigation**: In this case, the SQL injection is what makes this attack possible, so mitigating that issue will fix this as well.  It is also possible (and recommended) that you escape the data returned by the database.
 
-**Affected Assets**: http://breaker101.herokuapp.com/level6
+**Affected Assets**: http://example.herokuapp.com/level6
 
 SQL Injection
 -------------
@@ -254,9 +254,9 @@ SQL Injection
 
 **Affected Assets**:
 
-1. http://breaker101.herokuapp.com/level6
-2. http://breaker101.herokuapp.com/level6/post_add
-3. http://breaker101.herokuapp.com/level6/edit
+1. http://example.herokuapp.com/level6
+2. http://example.herokuapp.com/level6/post_add
+3. http://example.herokuapp.com/level6/edit
 
 Cross-Site Request Forgery
 --------------------------
@@ -276,7 +276,7 @@ Cross-Site Request Forgery
 
 **Mitigation**: Proper CSRF tokens should be used on all forms and validated upon submission.  You can read more here: https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)
 
-**Affected Assets**: http://breaker101.herokuapp.com/level6/post_add
+**Affected Assets**: http://example.herokuapp.com/level6/post_add
 
 Level7
 ======
@@ -290,7 +290,7 @@ Reflected XSS
 
 **Reproduction Steps**:
 
-1. Go to http://breaker101.herokuapp.com/level7
+1. Go to http://example.herokuapp.com/level7
 2. Submit any username with the password: `"><script>alert(1);</script>`
 3. Note that an alert dialog is shown
 
@@ -298,7 +298,7 @@ Reflected XSS
 
 **Mitigation**: All user input must be escaped before displaying to the page, in order to properly mitigate XSS issues.
 
-**Affected Assets**: http://breaker101.herokuapp.com/level7/post_index
+**Affected Assets**: http://example.herokuapp.com/level7/post_index
 
 SQL Injection
 -------------
@@ -309,7 +309,7 @@ SQL Injection
 
 **Reproduction Steps**:
 
-1. Go to http://breaker101.herokuapp.com/level7
+1. Go to http://example.herokuapp.com/level7
 2. Enter the password `password` and the following username: `' UNION SELECT 'password`
 3. Note that you are successfully logged in
 
