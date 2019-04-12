@@ -135,7 +135,7 @@
 <p><strong>Reproduction Steps</strong>:</p>
 
 <ol>
-<li>Go to http://breaker101.herokuapp.com/level5/read?path=nonexistent%3Cscript%3Ealert(1);%3C/script%3E</li>
+<li>Go to http://example.herokuapp.com/level5/read?path=nonexistent%3Cscript%3Ealert(1);%3C/script%3E</li>
 <li>Note that an alert dialog is shown</li>
 </ol>
 
@@ -146,8 +146,8 @@
 <p><strong>Affected Assets</strong>:</p>
 
 <ol>
-<li>http://breaker101.herokuapp.com/level5</li>
-<li>http://breaker101.herokuapp.com/level5/read</li>
+<li>http://example.herokuapp.com/level5</li>
+<li>http://example.herokuapp.com/level5/read</li>
 </ol>
 
 <h2>Directory Traversal</h2>
@@ -159,7 +159,7 @@
 <p><strong>Reproduction Steps</strong>:</p>
 
 <ol>
-<li>Go to http://breaker101.herokuapp.com/level5?path=../../../../../../etc</li>
+<li>Go to http://example.herokuapp.com/level5?path=../../../../../../etc</li>
 <li>Note that the contents of the <code>/etc</code> directory are shown</li>
 </ol>
 
@@ -167,7 +167,7 @@
 
 <p><strong>Mitigation</strong>: Paths constructed using user input should have instances of <code>../</code> (and <code>..\</code>) removed.  Alternatively, detection of such traversal attacks and failing early would potentially make this more resilient.</p>
 
-<p><strong>Affected Assets</strong>: http://breaker101.herokuapp.com/level5</p>
+<p><strong>Affected Assets</strong>: http://example.herokuapp.com/level5</p>
 
 <h2>Directory Traversal</h2>
 
@@ -178,7 +178,7 @@
 <p><strong>Reproduction Steps</strong>:</p>
 
 <ol>
-<li>Go to http://breaker101.herokuapp.com/level5/read?path=....//....//....//....//....//....//etc/passwd</li>
+<li>Go to http://example.herokuapp.com/level5/read?path=....//....//....//....//....//....//etc/passwd</li>
 <li>Note that the contents of the <code>/etc/passwd</code> file is shown</li>
 </ol>
 
@@ -186,7 +186,7 @@
 
 <p><strong>Mitigation</strong>: Paths constructed using user input should have instances of <code>../</code> (and <code>..\</code>) removed.  Alternatively, detection of such traversal attacks and failing early would potentially make this more resilient.</p>
 
-<p><strong>Affected Assets</strong>: http://breaker101.herokuapp.com/level5/read</p>
+<p><strong>Affected Assets</strong>: http://example.herokuapp.com/level5/read</p>
 
 <h2>Command Injection</h2>
 
@@ -206,7 +206,7 @@
 
 <p><strong>Mitigation</strong>: All user input used in the creation of command lines should be properly quoted and escaped prior to inclusion.  When possible, avoid the construction of command lines using user input entirely.</p>
 
-<p><strong>Affected Assets</strong>: http://breaker101.herokuapp.com/level5/post_search</p>
+<p><strong>Affected Assets</strong>: http://example.herokuapp.com/level5/post_search</p>
 
 <h1>Level6</h1>
 
@@ -230,7 +230,7 @@
 
 <p><strong>Mitigation</strong>: All user input must be properly HTML escaped before output.</p>
 
-<p><strong>Affected Assets</strong>: http://breaker101.herokuapp.com/level6/edit</p>
+<p><strong>Affected Assets</strong>: http://example.herokuapp.com/level6/edit</p>
 
 <h2>Reflected XSS</h2>
 
@@ -241,7 +241,7 @@
 <p><strong>Reproduction Steps</strong>:</p>
 
 <ol>
-<li>As an admin, visit the page <code>http://breaker101.herokuapp.com/level6?filter=+%27%29+UNION+SELECT+%27%3Cscript%3Ealert%281%29%3B%3C%2Fscript%3E%27%2C+1%2C+1+FROM+students+WHERE+%281%3D1+OR+%27test%27%3D%27</code></li>
+<li>As an admin, visit the page <code>http://example.herokuapp.com/level6?filter=+%27%29+UNION+SELECT+%27%3Cscript%3Ealert%281%29%3B%3C%2Fscript%3E%27%2C+1%2C+1+FROM+students+WHERE+%281%3D1+OR+%27test%27%3D%27</code></li>
 <li>Note that an alert dialog is shown</li>
 </ol>
 
@@ -249,7 +249,7 @@
 
 <p><strong>Mitigation</strong>: In this case, the SQL injection is what makes this attack possible, so mitigating that issue will fix this as well.  It is also possible (and recommended) that you escape the data returned by the database.</p>
 
-<p><strong>Affected Assets</strong>: http://breaker101.herokuapp.com/level6</p>
+<p><strong>Affected Assets</strong>: http://example.herokuapp.com/level6</p>
 
 <h2>SQL Injection</h2>
 
@@ -270,9 +270,9 @@
 <p><strong>Affected Assets</strong>:</p>
 
 <ol>
-<li>http://breaker101.herokuapp.com/level6</li>
-<li>http://breaker101.herokuapp.com/level6/post_add</li>
-<li>http://breaker101.herokuapp.com/level6/edit</li>
+<li>http://example.herokuapp.com/level6</li>
+<li>http://example.herokuapp.com/level6/post_add</li>
+<li>http://example.herokuapp.com/level6/edit</li>
 </ol>
 
 <h2>Cross-Site Request Forgery</h2>
@@ -294,7 +294,7 @@
 
 <p><strong>Mitigation</strong>: Proper CSRF tokens should be used on all forms and validated upon submission.  You can read more here: https://www.owasp.org/index.php/Cross-Site<em>Request</em>Forgery_(CSRF)</p>
 
-<p><strong>Affected Assets</strong>: http://breaker101.herokuapp.com/level6/post_add</p>
+<p><strong>Affected Assets</strong>: http://example.herokuapp.com/level6/post_add</p>
 
 <h1>Level7</h1>
 
@@ -307,7 +307,7 @@
 <p><strong>Reproduction Steps</strong>:</p>
 
 <ol>
-<li>Go to http://breaker101.herokuapp.com/level7</li>
+<li>Go to http://example.herokuapp.com/level7</li>
 <li>Submit any username with the password: <code>"&gt;&lt;script&gt;alert(1);&lt;/script&gt;</code></li>
 <li>Note that an alert dialog is shown</li>
 </ol>
@@ -316,7 +316,7 @@
 
 <p><strong>Mitigation</strong>: All user input must be escaped before displaying to the page, in order to properly mitigate XSS issues.</p>
 
-<p><strong>Affected Assets</strong>: http://breaker101.herokuapp.com/level7/post_index</p>
+<p><strong>Affected Assets</strong>: http://example.herokuapp.com/level7/post_index</p>
 
 <h2>SQL Injection</h2>
 
@@ -327,12 +327,12 @@
 <p><strong>Reproduction Steps</strong>:</p>
 
 <ol>
-<li>Go to http://breaker101.herokuapp.com/level7</li>
+<li>Go to http://example.herokuapp.com/level7</li>
 <li>Enter the password <code>password</code> and the following username: <code>' UNION SELECT 'password</code></li>
 <li>Note that you are successfully logged in</li>
 </ol>
 
 <p><strong>Impact</strong>: An attacker can arbitrarily read and write to the database, compromising data integrity and confidentiality, in addition to potentially escalating privileges to circumvent security controls.</p>
 
-<p><strong>Affected Assets</strong>: http://breaker101.herokuapp.com/level7/post_index</p>
+<p><strong>Affected Assets</strong>: http://example.herokuapp.com/level7/post_index</p>
 
