@@ -315,4 +315,4 @@ SQL Injection
 
 **Impact**: An attacker can arbitrarily read and write to the database, compromising data integrity and confidentiality, in addition to potentially escalating privileges to circumvent security controls.
 
-**Affected Assets**: http://breaker101.herokuapp.com/level7/post_index
+**Affected Assets**: http://example.herokuapp.com/level7/post_index
