@@ -51,8 +51,8 @@ Unchecked Redirects
 
 **Affected Assets**:
 
-1. http://breaker-studentcenter.appspot.com/levels/4/delete
-2. http://breaker-studentcenter.appspot.com/levels/4/vote
+1. http://example.com/levels/4/delete
+2. http://example.com/levels/4/vote
 
 
 Reflected XSS
@@ -64,14 +64,14 @@ Reflected XSS
 
 **Reproduction Steps**:
 
-1. Go to http://breaker-studentcenter.appspot.com/levels/4/delete?id=4892534685827072&type=Story&from=%22%3E%3Cscript%3Ealert(1)%3B%3C/script%3E
+1. Go to http://example.com/levels/4/delete?id=4892534685827072&type=Story&from=%22%3E%3Cscript%3Ealert(1)%3B%3C/script%3E
 2. Note that an alert dialog is shown
 
 **Impact**: This vulnerability allows an attacker to perform any tasks she desires, as an arbitrary user whom she convinces to click a link containing an XSS payload.
 
 **Mitigation**: All user input must be escaped before displaying to the page, in order to properly mitigate XSS issues.
 
-**Affected Assets**: http://breaker-studentcenter.appspot.com/levels/4/delete
+**Affected Assets**: http://example.com/levels/4/delete
 
 Cross-Site Request Forgery
 --------------------------
@@ -91,8 +91,8 @@ Cross-Site Request Forgery
 
 **Affected Assets**:
 
-1. http://breaker-studentcenter.appspot.com/levels/4/delete
-1. http://breaker-studentcenter.appspot.com/levels/4/vote
+1. http://example.com/levels/4/delete
+1. http://example.com/levels/4/vote
 
 Stored XSS
 ----------
@@ -103,7 +103,7 @@ Stored XSS
 
 **Reproduction Steps**:
 
-1. Go to http://breaker-studentcenter.appspot.com/levels/4/submit
+1. Go to http://example.com/levels/4/submit
 2. Enter a title and the following URL: `http://google.com<img src="404" onerror="console.log(12345);">`
 2. Note that an alert dialog is shown
 
@@ -113,8 +113,8 @@ Stored XSS
 
 **Affected Assets**:
 
-1. http://breaker-studentcenter.appspot.com/levels/4/submit -- Domain XSS
-2. http://breaker-studentcenter.appspot.com/levels/4/ and http://breaker-studentcenter.appspot.com/levels/4/comments -- User nicknames
+1. http://example.com/levels/4/submit -- Domain XSS
+2. http://example.com/levels/4/ and http://example.com/levels/4/comments -- User nicknames
 
 Level5
 ======
